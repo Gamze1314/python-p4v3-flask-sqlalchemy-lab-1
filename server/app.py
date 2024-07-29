@@ -33,13 +33,32 @@ def get_magnitude_by_id(id):
     magnitude = Earthquake.query.filter_by(id=id).first()
 
     if magnitude:  # if magnitude is found with given id
-        body = magnitude.to_dict() # convert it to dictionary
+        body = magnitude.to_dict()  # convert it to dictionary
         status = 200
     else:
         body = {'message': f'Earthquake {id} not found.'}
         status = 404
 
     return make_response(body, status)
+
+
+# /earthquakes/magnitude/<float:magnitude>
+@app.route('/earthquakes/magnitude/<float:magnitude>')
+def get_earthquakes_by_magnitude(magnitude):
+
+    # query the database to get the eq' magnitudes greater than or equal to the parameter value.
+    quakes_list = []
+
+    for earthquake in Earthquake.query.filter(Earthquake.magnitude >= magnitude).all():
+        quakes_list.append(earthquake.to_dict())
+
+        # return JSON with status 200
+    body = {'count': len(quakes_list),
+            'quakes': quakes_list
+            }
+
+    return make_response(body, 200)
+
 
 
 if __name__ == '__main__':
