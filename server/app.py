@@ -21,6 +21,25 @@ def index():
     return make_response(body, 200)
 
 # Add views here
+# route /earthquakes/<int:id>
+# get the earthquake with that id, and return a response containing the valuesformatted as JSON string. if no row found, return error message.
+# status is 200
+
+
+@app.route('/earthquakes/<int:id>')
+def get_magnitude_by_id(id):
+
+    # query the db
+    magnitude = Earthquake.query.filter_by(id=id).first()
+
+    if magnitude:  # if magnitude is found with given id
+        body = magnitude.to_dict() # convert it to dictionary
+        status = 200
+    else:
+        body = {'message': f'Earthquake {id} not found.'}
+        status = 404
+
+    return make_response(body, status)
 
 
 if __name__ == '__main__':
